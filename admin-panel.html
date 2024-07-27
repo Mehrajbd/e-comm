@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel - Singular</title>
+
+  <link rel="stylesheet" href="./assets/css/style-prefix.css">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f3f4f6;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .header {
+      background-color: #007bff;
+      color: #fff;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .sidebar {
+      background-color: #f8f9fa;
+      padding: 20px;
+      width: 250px;
+      flex-shrink: 0;
+    }
+
+    .main-content {
+      flex-grow: 1;
+      padding: 20px;
+    }
+
+    .container {
+      display: flex;
+      height: 100%;
+    }
+
+    .nav-item {
+      padding: 10px 0;
+    }
+
+    .nav-item a {
+      text-decoration: none;
+      color: #333;
+      font-size: 16px;
+    }
+
+    .nav-item a:hover {
+      color: #007bff;
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .table th, .table td {
+      border: 1px solid #ddd;
+      padding: 8px;
+    }
+
+    .table th {
+      background-color: #f2f2f2;
+      text-align: left;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 5px;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px;
+      font-size: 14px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    .form-group textarea {
+      resize: vertical;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="header">
+    <h1>Admin Panel</h1>
+  </div>
+  <div class="container">
+    <div class="sidebar">
+      <div class="nav-item"><a href="#" onclick="showSection('orders')">Manage Orders</a></div>
+      <div class="nav-item"><a href="#" onclick="showSection('products')">Manage Products</a></div>
+      <div class="nav-item"><a href="#" onclick="showSection('users')">Manage Users</a></div>
+    </div>
+    <div class="main-content">
+      <div id="orders" class="section">
+        <h2>Manage Orders</h2>
+        <table class="table" id="orders-table">
+          <thead>
+            <tr>
+              <th>Order Number</th>
+              <th>Customer</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Orders will be populated here -->
+          </tbody>
+        </table>
+      </div>
+      <div id="products" class="section" style="display: none;">
+        <h2>Manage Products</h2>
+        <button onclick="showProductForm()">Add New Product</button>
+        <table class="table" id="products-table">
+          <thead>
+            <tr>
+              <th>Product Name</th>
+              <th>Price</th>
+              <th>Stock</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Products will be populated here -->
+          </tbody>
+        </table>
+        <div id="product-form" style="display: none;">
+          <h3>Add/Edit Product</h3>
+          <form>
+            <div class="form-group">
+              <label for="product-name">Product Name</label>
+              <input type="text" id="product-name" name="product-name" required>
+            </div>
+            <div class="form-group">
+              <label for="product-price">Price</label>
+              <input type="number" id="product-price" name="product-price" required>
+            </div>
+            <div class="form-group">
+              <label for="product-stock">Stock</label>
+              <input type="number" id="product-stock" name="product-stock" required>
+            </div>
+            <button type="button" onclick="saveProduct()">Save</button>
+          </form>
+        </div>
+      </div>
+      <div id="users" class="section" style="display: none;">
+        <h2>Manage Users</h2>
+        <table class="table" id="users-table">
+          <thead>
+            <tr>
+              <th>Username</th>
+              <th>Email</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Users will be populated here -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const orders = [
+      { orderNumber: 'ORD123', customer: 'John Doe', status: 'Pending' },
+      { orderNumber: 'ORD124', customer: 'Jane Smith', status: 'Shipped' },
+    ];
+
+    const products = [
+      { name: 'Product 1', price: 100, stock: 50 },
+      { name: 'Product 2', price: 200, stock: 30 },
+    ];
+
+    function showSection(sectionId) {
+      const sections = document.querySelectorAll('.section');
+      sections.forEach(section => {
+        section.style.display = 'none';
+      });
+
+      document.getElementById(sectionId).style.display = 'block';
+    }
+
+    function populateOrders() {
+      const ordersTable = document.getElementById('orders-table').querySelector('tbody');
+      ordersTable.innerHTML = '';
+
+      orders.forEach(order => {
+        const row = document.createElement('tr');
+        row.innerHTML = 
+          `<td>${order.orderNumber}</td>
+           <td>${order.customer}</td>
+           <td>${order.status}</td>
+           <td><button onclick="updateOrderStatus('${order.orderNumber}')">Update Status</button></td>`;
+        ordersTable.appendChild(row);
+      });
+    }
+
+    function populateProducts() {
+      const productsTable = document.getElementById('products-table').querySelector('tbody');
+      productsTable.innerHTML = '';
+
+      products.forEach(product => {
+        const row = document.createElement('tr');
+        row.innerHTML = 
+          `<td>${product.name}</td>
+           <td>${product.price}</td>
+           <td>${product.stock}</td>
+           <td><button onclick="editProduct('${product.name}')">Edit</button> <button onclick="deleteProduct('${product.name}')">Delete</button></td>`;
+        productsTable.appendChild(row);
+      });
+    }
+
+    function populateUsers() {
+      const usersTable = document.getElementById('users-table').querySelector('tbody');
+      usersTable.innerHTML = '';
+
+      // Retrieve users from localStorage
+      let users = JSON.parse(localStorage.getItem('users')) || [];
+
+      users.forEach(user => {
+        const row = document.createElement('tr');
+        row.innerHTML = 
+          `<td>${user.username}</td>
+           <td>${user.email}</td>
+           <td><button onclick="deleteUser('${user.username}')">Delete</button></td>`;
+        usersTable.appendChild(row);
+      });
+    }
+
+    function updateOrderStatus(orderNumber) {
+      const order = orders.find(o => o.orderNumber === orderNumber);
+      if (order) {
+        const newStatus = prompt('Enter new status:', order.status);
+        if (newStatus) {
+          order.status = newStatus;
+          populateOrders();
+        }
+      }
+    }
+
+    function showProductForm() {
+      document.getElementById('product-form').style.display = 'block';
+    }
+
+    function saveProduct() {
+      const name = document.getElementById('product-name').value;
+      const price = document.getElementById('product-price').value;
+      const stock = document.getElementById('product-stock').value;
+
+      const existingProduct = products.find(p => p.name === name);
+      if (existingProduct) {
+        existingProduct.price = price;
+        existingProduct.stock = stock;
+      } else {
+        products.push({ name, price, stock });
+      }
+
+      populateProducts();
+      document.getElementById('product-form').style.display = 'none';
+    }
+
+    function editProduct(name) {
+      const product = products.find(p => p.name === name);
+      if (product) {
+        document.getElementById('product-name').value = product.name;
+        document.getElementById('product-price').value = product.price;
+        document.getElementById('product-stock').value = product.stock;
+        showProductForm();
+      }
+    }
+
+    function deleteProduct(name) {
+      const index = products.findIndex(p => p.name === name);
+      if (index !== -1) {
+        products.splice(index, 1);
+        populateProducts();
+      }
+    }
+
+    function deleteUser(username) {
+      let users = JSON.parse(localStorage.getItem('users')) || [];
+      const index = users.findIndex(u => u.username === username);
+      if (index !== -1) {
+        users.splice(index, 1);
+        localStorage.setItem('users', JSON.stringify(users));
+        populateUsers();
+      }
+    }
+
+    window.onload = function () {
+      populateOrders();
+      populateProducts();
+      populateUsers();
+    }
+  </script>
+</body>
+
+</html>
