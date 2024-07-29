@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Blog</title>
     <link rel="stylesheet" href="styles.css">
-    <!-- Custom CSS link -->
     <link rel="stylesheet" href="./assets/css/style-prefix.css">
     <style>
         body {
@@ -70,7 +69,8 @@
 
         .blog-image {
             width: 100%;
-            height: 200px;
+            height: auto;
+            max-height: 200px;
             object-fit: cover;
         }
 
@@ -80,25 +80,45 @@
 
         .blog-content h2 {
             margin-top: 0;
+            font-size: 1.5rem;
         }
 
         .blog-content p {
             margin: 0.5rem 0;
+            font-size: 1rem;
         }
 
         .read-more, .show-less {
             color: #007bff;
             text-decoration: none;
+            cursor: pointer;
         }
 
         .read-more:hover, .show-less:hover {
             text-decoration: underline;
         }
-    </style> 
 
+        @media (max-width: 600px) {
+            .home-button {
+                font-size: 14px;
+            }
+
+            .home-button svg {
+                width: 20px;
+                height: 20px;
+            }
+
+            .blog-content h2 {
+                font-size: 1.25rem;
+            }
+
+            .blog-content p {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- Header -->
     <header>
         <a href="index.html" class="home-button">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -187,6 +207,28 @@
                 </div>
             </div>
 
+            <div class="blog-card">
+              <img src="assets/images/attar.1.jpg" alt="Blog Image 1" class="blog-image">
+              <div class="blog-content">
+                  <h2>Blog Title 1</h2>
+                  <p class="excerpt">This is a short excerpt from the blog post. <a href="#" class="read-more">Read More</a></p>
+                  <p class="full-content" style="display: none;">
+                      This is the full content of the blog post. It contains more detailed information about the topic.
+                      <a href="#" class="show-less" style="display: none;">Show Less</a>
+                  </p>
+              </div>
+          </div>
+          <div class="blog-card">
+            <img src="assets/images/attar.2.jpg.crdownload.jpg" alt="Blog Image 1" class="blog-image">
+            <div class="blog-content">
+                <h2>Blog Title 1</h2>
+                <p class="excerpt">This is a short excerpt from the blog post. <a href="#" class="read-more">Read More</a></p>
+                <p class="full-content" style="display: none;">
+                    This is the full content of the blog post. It contains more detailed information about the topic.
+                    <a href="#" class="show-less" style="display: none;">Show Less</a>
+                </p>
+            </div>
+        </div>
             <!-- Repeat other blog cards as needed -->
         </section>
     </main>
@@ -481,27 +523,27 @@
     </div>
 
   </footer>
-    <script>
-        document.querySelectorAll('.read-more').forEach(button => {
-            button.addEventListener('click', event => {
-                event.preventDefault();
-                const excerpt = button.closest('.excerpt');
-                const fullContent = excerpt.nextElementSibling;
-                excerpt.style.display = 'none';
-                fullContent.style.display = 'block';
-                fullContent.querySelector('.show-less').style.display = 'inline';
-            });
+  <script>
+    document.querySelectorAll('.read-more').forEach(button => {
+        button.addEventListener('click', event => {
+            event.preventDefault();
+            const excerpt = button.closest('.excerpt');
+            const fullContent = excerpt.nextElementSibling;
+            excerpt.style.display = 'none';
+            fullContent.style.display = 'block';
+            fullContent.querySelector('.show-less').style.display = 'inline';
         });
+    });
 
-        document.querySelectorAll('.show-less').forEach(button => {
-            button.addEventListener('click', event => {
-                event.preventDefault();
-                const fullContent = button.closest('.full-content');
-                const excerpt = fullContent.previousElementSibling;
-                fullContent.style.display = 'none';
-                excerpt.style.display = 'block';
-            });
+    document.querySelectorAll('.show-less').forEach(button => {
+        button.addEventListener('click', event => {
+            event.preventDefault();
+            const fullContent = button.closest('.full-content');
+            const excerpt = fullContent.previousElementSibling;
+            fullContent.style.display = 'none';
+            excerpt.style.display = 'block';
         });
-    </script>
+    });
+</script>
 </body>
 </html>
